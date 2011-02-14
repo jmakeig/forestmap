@@ -17,9 +17,6 @@
 
 input {
   font: 24pt helvetica neue;
-  background: none;
-  border: none;
-  outline: 0;
 }
 
 #title {
@@ -62,6 +59,7 @@ treemap.label.add(pv.Label)
 vis.render();
 
 /** Counts the number of matching classes, updating the title element. */
+/*
 function count() {
   var classes = 0, bytes = 0, total = 0;
   for (var i = 0; i < nodes.length; i++) {
@@ -79,17 +77,18 @@ function count() {
       + bytes + " bytes ("
       + percent.toFixed(percent < 10) + "%).";
 }
+*/
 
 /** Updates the visualization and count when a new query is entered. */
 function update(query) {
   if (query != re) {
     re = new RegExp(query, "i");
-    count();
+    //count();
     vis.render();
   }
 }
 
-count();
+//count();
 
     </script>
     <div id="footer">

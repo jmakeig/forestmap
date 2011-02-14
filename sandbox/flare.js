@@ -8,7 +8,7 @@ Number.prototype.pad = function(length, char) {
 
 var flare = {};
 flare.hosts = {};
-for(var i = 1; i < 50; i++) {
+for(var i = 1; i < 6; i++) {
 	var forests = {}
 	var max = Math.floor(Math.random()*11) + 1;
 	for(var j = 0; j < max; j++) {
