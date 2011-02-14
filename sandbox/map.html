@@ -36,54 +36,59 @@ function title(d) {
 }
 
 var re = "",
-    color = pv.Colors.category19().by(function(d) d.parentNode.nodeName)
+    color = pv.Colors.category19().by(
+      function(d) {
+        if(d.parentNode) 
+          return d.parentNode.nodeName; 
+        else 
+          return "";
+      }),
     nodes = pv.dom(flare).root("flare").nodes();
+
+function active(d, v) {
+  d.active = v; 
+  if (d.parentNode) active(d.parentNode, v);
+}
 
 var vis = new pv.Panel()
     .width(1024)
-    .height(768);
+    .height(768)
+    .margin(0);
 
-var treemap = vis.add(pv.Layout.Treemap)
-    .nodes(nodes)
-    .round(true);
-
-treemap.leaf.add(pv.Panel)
-    .fillStyle(function(d) color(d).alpha(title(d).match(re) ? 1 : .2))
-    .strokeStyle("#ccc")
+var treemap = vis.add(pv.Layout.Treemap);
+treemap
+    .nodes(pv.dom(flare).root("flare").nodes())
+    .padding(0)
+    .round(true)
+  .node.add(pv.Bar)
+    .fillStyle(
+      function(d) { 
+        return d.active ? 
+          "lightcoral" : 
+          (color(d).alpha(title(d).match(re) ? 
+            1 : 
+            .2
+          )
+          )})
     .lineWidth(1)
-    .antialias(false);
-
+    .event("mouseover", function(d) (active(d, true), this))
+    .event("mouseout", function(d) (active(d, false), this))
+    .event("click", function(d) (console.dir(d)))
+    ;
 treemap.label.add(pv.Label)
+    .text(function(d) d.nodeName)
     .textStyle(function(d) pv.rgb(0, 0, 0, title(d).match(re) ? 1 : .2));
+    ;
 
 vis.render();
 
-/** Counts the number of matching classes, updating the title element. */
-/*
-function count() {
-  var classes = 0, bytes = 0, total = 0;
-  for (var i = 0; i < nodes.length; i++) {
-    var n = nodes[i];
-    if(n.firstChild) continue;
-    total += n.nodeValue;
-    if (title(n).match(re)) {
-      classes++;
-      bytes += n.nodeValue;
-    }
-  }
-  var percent = bytes / total * 100;
-  document.getElementById("title").innerHTML
-      = classes + " classes; "
-      + bytes + " bytes ("
-      + percent.toFixed(percent < 10) + "%).";
-}
-*/
+
+
 
 /** Updates the visualization and count when a new query is entered. */
 function update(query) {
   if (query != re) {
     re = new RegExp(query, "i");
-    //count();
     vis.render();
   }
 }
